@@ -37,14 +37,13 @@ axi_bcd_filter/
 ## Описание задания
 
 Необходимо реализовать модуль, который работает как фильтр AXI4-Stream потока.
-
+![Structure](structure.png)
 На вход поступают 8-битные значения в формате BCD:
 
 ```text
 s_axis_tdata[7:4] — десятки
 s_axis_tdata[3:0] — единицы
 ```
-[structure.drawio](https://github.com/user-attachments/files/27575064/structure.drawio)
 
 Примеры корректных BCD-значений:
 
@@ -55,114 +54,6 @@ s_axis_tdata[3:0] — единицы
 8'h24 = 24
 8'h99 = 99
 ```
-[U<mxfile host="app.diagrams.net">
-  <diagram name="Страница-1" id="71pgJAMiIY7A4IGfKEe7">
-    <mxGraphModel dx="729" dy="623" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
-      <root>
-        <mxCell id="0" />
-        <mxCell id="1" parent="0" />
-        <mxCell id="lRIrzWzYxItEvFAQ7Y21-1" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="Master" vertex="1">
-          <mxGeometry height="240" width="120" x="100" y="320" as="geometry" />
-        </mxCell>
-        <mxCell id="lRIrzWzYxItEvFAQ7Y21-2" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="Slave" vertex="1">
-          <mxGeometry height="240" width="120" x="600" y="320" as="geometry" />
-        </mxCell>
-        <mxCell id="lRIrzWzYxItEvFAQ7Y21-3" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="axi_bcd_filter" vertex="1">
-          <mxGeometry height="240" width="120" x="350" y="320" as="geometry" />
-        </mxCell>
-        <mxCell id="lRIrzWzYxItEvFAQ7Y21-4" edge="1" parent="1" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" value="">
-          <mxGeometry height="50" relative="1" width="50" as="geometry">
-            <mxPoint x="220" y="400" as="sourcePoint" />
-            <mxPoint x="350" y="400" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="lRIrzWzYxItEvFAQ7Y21-15" connectable="0" parent="lRIrzWzYxItEvFAQ7Y21-4" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="s_axis_tvalid" vertex="1">
-          <mxGeometry relative="1" x="-0.0308" as="geometry">
-            <mxPoint x="-3" y="-10" as="offset" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="lRIrzWzYxItEvFAQ7Y21-5" edge="1" parent="1" source="lRIrzWzYxItEvFAQ7Y21-1" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="lRIrzWzYxItEvFAQ7Y21-3" value="">
-          <mxGeometry height="50" relative="1" width="50" as="geometry">
-            <mxPoint x="390" y="420" as="sourcePoint" />
-            <mxPoint x="440" y="370" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="lRIrzWzYxItEvFAQ7Y21-14" connectable="0" parent="lRIrzWzYxItEvFAQ7Y21-5" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="s_axis_tdata" vertex="1">
-          <mxGeometry relative="1" x="-0.0923" y="4" as="geometry">
-            <mxPoint y="-6" as="offset" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="lRIrzWzYxItEvFAQ7Y21-6" edge="1" parent="1" style="endArrow=classic;html=1;rounded=0;entryX=1;entryY=0.75;entryDx=0;entryDy=0;exitX=0;exitY=0.75;exitDx=0;exitDy=0;" value="">
-          <mxGeometry height="50" relative="1" width="50" as="geometry">
-            <mxPoint x="350" y="480" as="sourcePoint" />
-            <mxPoint x="220" y="480" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="lRIrzWzYxItEvFAQ7Y21-13" connectable="0" parent="lRIrzWzYxItEvFAQ7Y21-6" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="s_axis_tready" vertex="1">
-          <mxGeometry relative="1" x="-0.1385" y="4" as="geometry">
-            <mxPoint x="-14" y="-14" as="offset" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="lRIrzWzYxItEvFAQ7Y21-7" edge="1" parent="1" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" value="">
-          <mxGeometry height="50" relative="1" width="50" as="geometry">
-            <mxPoint x="470" y="400" as="sourcePoint" />
-            <mxPoint x="600" y="400" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="lRIrzWzYxItEvFAQ7Y21-12" connectable="0" parent="lRIrzWzYxItEvFAQ7Y21-7" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="m_axis_tvalid" vertex="1">
-          <mxGeometry relative="1" x="0.0154" y="2" as="geometry">
-            <mxPoint x="4" y="-8" as="offset" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="lRIrzWzYxItEvFAQ7Y21-8" edge="1" parent="1" source="lRIrzWzYxItEvFAQ7Y21-3" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="lRIrzWzYxItEvFAQ7Y21-2" value="">
-          <mxGeometry height="50" relative="1" width="50" as="geometry">
-            <mxPoint x="390" y="420" as="sourcePoint" />
-            <mxPoint x="440" y="370" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="lRIrzWzYxItEvFAQ7Y21-11" connectable="0" parent="lRIrzWzYxItEvFAQ7Y21-8" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="m_axis_tdata" vertex="1">
-          <mxGeometry relative="1" x="-0.0923" y="-3" as="geometry">
-            <mxPoint x="11" y="-13" as="offset" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="lRIrzWzYxItEvFAQ7Y21-9" edge="1" parent="1" style="endArrow=classic;html=1;rounded=0;exitX=0;exitY=0.75;exitDx=0;exitDy=0;entryX=1;entryY=0.75;entryDx=0;entryDy=0;" value="">
-          <mxGeometry height="50" relative="1" width="50" as="geometry">
-            <mxPoint x="600" y="480" as="sourcePoint" />
-            <mxPoint x="470" y="480" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="lRIrzWzYxItEvFAQ7Y21-10" connectable="0" parent="lRIrzWzYxItEvFAQ7Y21-9" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="m_axis_tready" vertex="1">
-          <mxGeometry relative="1" x="-0.0308" y="2" as="geometry">
-            <mxPoint x="3" y="-12" as="offset" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="lRIrzWzYxItEvFAQ7Y21-16" edge="1" parent="1" style="endArrow=classic;html=1;rounded=0;" value="">
-          <mxGeometry height="50" relative="1" width="50" as="geometry">
-            <mxPoint x="300" y="360" as="sourcePoint" />
-            <mxPoint x="350" y="360" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="lRIrzWzYxItEvFAQ7Y21-17" connectable="0" parent="lRIrzWzYxItEvFAQ7Y21-16" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="&lt;div&gt;clk&lt;/div&gt;" vertex="1">
-          <mxGeometry relative="1" x="-0.4303" y="1" as="geometry">
-            <mxPoint x="6" y="-9" as="offset" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="lRIrzWzYxItEvFAQ7Y21-18" edge="1" parent="1" style="endArrow=classic;html=1;rounded=0;" value="">
-          <mxGeometry height="50" relative="1" width="50" as="geometry">
-            <mxPoint x="300" y="520" as="sourcePoint" />
-            <mxPoint x="350" y="520" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="lRIrzWzYxItEvFAQ7Y21-20" connectable="0" parent="lRIrzWzYxItEvFAQ7Y21-18" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" value="rst" vertex="1">
-          <mxGeometry relative="1" x="-0.3267" y="2" as="geometry">
-            <mxPoint y="-8" as="offset" />
-          </mxGeometry>
-        </mxCell>
-      </root>
-    </mxGraphModel>
-  </diagram>
-</mxfile>
-ploading structure.drawio…]()
 
 Примеры некорректных BCD-значений:
 
