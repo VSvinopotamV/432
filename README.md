@@ -2,8 +2,8 @@
 
 Тестовое задание на летнюю стажировку в **Импульс от Ядра**.
 
-Проект реализует фильтр AXI4-Stream потока на SystemVerilog.  
-Модуль принимает 8-битные значения в формате BCD и пропускает на выход только те значения, которые делятся на 4 без остатка.
+Проект реализует фильтр AXI4-Stream потока на **SystemVerilog**.  
+Модуль принимает 8-битные значения в формате **BCD** и пропускает на выход только те значения, которые делятся на 4 без остатка.
 
 ---
 
@@ -23,21 +23,38 @@ axi_bcd_filter/
 ├── rtl/
 │   └── axi_bcd_filter.sv
 ├── tb/
-│   └── tb_axi_bcd_filter.sv
+│   └── axi_bcd_filter_tb.sv
 ├── screenshots/
-│   ├── simulation.png
+│   ├── structure.png
+│   ├── axi_bcd_filter.png
 │   ├── waveform.png
-│   └── synthesis.png
+│   └── syn.png
 ├── README.md
 └── .gitignore
 ```
 
 ---
 
+## Структурная схема
+
+Модуль `axi_bcd_filter` расположен между AXI4-Stream master и AXI4-Stream slave.
+
+```text
+Master -> axi_bcd_filter -> Slave
+```
+
+Master генерирует входной поток данных.  
+Фильтр принимает данные через `s_axis_*`, обрабатывает их и передаёт подходящие значения дальше через `m_axis_*`.  
+Slave принимает отфильтрованный поток и управляет сигналом `m_axis_tready`.
+
+![Structure](screenshots/structure.png)
+
+---
+
 ## Описание задания
 
 Необходимо реализовать модуль, который работает как фильтр AXI4-Stream потока.
-![Structure](structure.png)
+
 На вход поступают 8-битные значения в формате BCD:
 
 ```text
@@ -118,6 +135,8 @@ value = tens * 10 + ones;
 value % 4 == 0
 ```
 
+В коде условие фильтрации реализовано через сигнал `pass_filter`.
+
 ---
 
 ## Поддержка backpressure
@@ -158,6 +177,8 @@ parameter bit bsd_check = 1
 Если `bsd_check = 1`, модуль проверяет корректность BCD-значения.  
 Если `bsd_check = 0`, проверка BCD отключается.
 
+Некорректные BCD-значения отбрасываются при включённом параметре `bsd_check`.
+
 ---
 
 ## Интерфейс модуля
@@ -188,40 +209,71 @@ module axi_bcd_filter #(
 | `clk` | input | Тактовый сигнал |
 | `rst` | input | Синхронный сброс |
 | `s_axis_tvalid` | input | Валидность входных данных |
-| `s_axis_tdata` | input | Входное BCD-значение |
+| `s_axis_tdata[7:0]` | input | Входное BCD-значение |
 | `s_axis_tready` | output | Готовность модуля принять входные данные |
 | `m_axis_tvalid` | output | Валидность выходных данных |
-| `m_axis_tdata` | output | Выходное BCD-значение |
+| `m_axis_tdata[7:0]` | output | Выходное BCD-значение |
 | `m_axis_tready` | input | Готовность приёмника принять выходные данные |
+
+---
+
+## Основная логика модуля
+
+Внутри модуля выделяются десятки и единицы:
+
+```systemverilog
+assign tens = s_axis_tdata[7:4];
+assign ones = s_axis_tdata[3:0];
+```
+
+Условие прохождения фильтра:
+
+```systemverilog
+assign pass_filter =
+    ((!bsd_check) || ((tens < 4'd10) && (ones < 4'd10))) &&
+    (((tens * 4'b1010 + ones) % 4) == 0);
+```
+
+Условия handshake:
+
+```systemverilog
+assign s_handshake = s_axis_tvalid && s_axis_tready;
+assign m_handshake = m_axis_tvalid && m_axis_tready;
+```
+
+Формирование готовности входного интерфейса:
+
+```systemverilog
+assign s_axis_tready = m_axis_tready || !m_axis_tvalid;
+```
+
+---
+
+## RTL-код в Vivado
+
+Скриншот модуля `axi_bcd_filter` в Vivado:
+
+![RTL Code](screenshots/axi_bcd_filter.png)
 
 ---
 
 ## Testbench
 
-Для проверки был написан простой testbench `tb_axi_bcd_filter.sv`.
+Для проверки был написан testbench `axi_bcd_filter_tb.sv`.
 
 Testbench:
 
 - генерирует случайные входные значения;
 - подаёт как корректные BCD-значения, так и значения с цифрами `A..F`;
 - выводит входные и выходные данные в консоль симуляции;
-- проверяет работу при периодическом изменении `m_axis_tready`.
+- проверяет работу при изменении `m_axis_tready`;
+- позволяет наблюдать удержание выходных данных при backpressure.
 
 ---
 
 ## Результаты симуляции
 
-### Консоль симуляции
-
-Скриншот вывода консоли Vivado/XSim:
-
-![Simulation Console](screenshots/simulation.png)
-
----
-
-### Waveform
-
-Скриншот временной диаграммы, где видно:
+На waveform видно:
 
 - входные данные `s_axis_tdata`;
 - сигнал `s_axis_tvalid`;
@@ -229,7 +281,8 @@ Testbench:
 - выходные данные `m_axis_tdata`;
 - сигнал `m_axis_tvalid`;
 - сигнал `m_axis_tready`;
-- удержание данных при `m_axis_tready = 0`.
+- случайные BCD и некорректные BCD-значения;
+- передачу только подходящих значений на выход.
 
 ![Waveform](screenshots/waveform.png)
 
@@ -237,7 +290,7 @@ Testbench:
 
 ## Синтез в Vivado
 
-Проект был создан и проверен в **Xilinx Vivado**.
+Проект был успешно синтезирован в **Xilinx Vivado**.
 
 Выбранная целевая ПЛИС:
 
@@ -247,7 +300,7 @@ x7a100tcsg324-1
 
 Скриншот успешного синтеза:
 
-![Synthesis](screenshots/synthesis.png)
+![Synthesis](screenshots/syn.png)
 
 ---
 
@@ -257,15 +310,17 @@ x7a100tcsg324-1
 - Выходные данные хранятся в регистрах.
 - Поддерживается AXI4-Stream handshake.
 - Поддерживается backpressure.
-- `s_axis_tready` формируется не как константа, а зависит от готовности выходного интерфейса.
+- `s_axis_tready` формируется не как константа.
 - Некорректные BCD-значения отбрасываются при включённом параметре `bsd_check`.
+- Порядок прошедших фильтр данных сохраняется.
+- Валидные данные не теряются при временной неготовности выходного приёмника.
 
 ---
 
-## Как запустить
+## Как запустить проект
 
-1. Открыть проект в Vivado.
-2. Добавить файл модуля:
+1. Открыть проект в **Vivado**.
+2. Добавить RTL-файл:
 
 ```text
 rtl/axi_bcd_filter.sv
@@ -274,12 +329,23 @@ rtl/axi_bcd_filter.sv
 3. Добавить testbench:
 
 ```text
-tb/tb_axi_bcd_filter.sv
+tb/axi_bcd_filter_tb.sv
 ```
 
-4. Запустить **Run Simulation**.
-5. Проверить вывод в консоли и waveform.
-6. При необходимости запустить **Run Synthesis** для выбранной ПЛИС `x7a100tcsg324-1`.
+4. Запустить симуляцию:
+
+```text
+Run Simulation
+```
+
+5. Проверить waveform.
+6. Запустить синтез:
+
+```text
+Run Synthesis
+```
+
+7. Убедиться, что синтез завершился успешно.
 
 ---
 
