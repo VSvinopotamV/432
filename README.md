@@ -302,15 +302,8 @@ Waveform:
 ### 1. Клонировать репозиторий
 
 ```bash
-git clone <ссылка_на_репозиторий>
-cd <папка_репозитория>
-```
-
-Например:
-
-```bash
-git clone https://gitflic.ru/project/username/axi-bcd-filter.git
-cd axi-bcd-filter
+git clone https://gitflic.ru/project/swiniopoty/embedded_fpga_impulse.git
+cd embedded_fpga_impulse
 ```
 
 ---
@@ -332,13 +325,7 @@ Window -> Tcl Console
 В Tcl Console перейти в папку проекта:
 
 ```tcl
-cd C:/path/to/axi-bcd-filter
-```
-
-Например:
-
-```tcl
-cd C:/Users/arsen/Desktop/axi-bcd-filter
+cd <папка_репозитория>
 ```
 
 Запустить скрипт:
@@ -350,88 +337,7 @@ source run.tcl
 Скрипт автоматически:
 
 - создаёт Vivado-проект;
-- выбирает целевую ПЛИС `x7a100tcsg324-1`;
-- добавляет RTL-файл `rtl/axi_bcd_filter.sv`;
-- добавляет testbench `tb/axi_bcd_filter_tb.sv`;
-- назначает top-модули;
+- выбирает ПЛИС;
 - запускает симуляцию.
 
 ---
-
-### 4. Посмотреть результаты симуляции
-
-После запуска симуляции открыть waveform и проверить сигналы:
-
-```text
-s_axis_tvalid
-s_axis_tready
-s_axis_tdata[7:0]
-
-m_axis_tvalid
-m_axis_tready
-m_axis_tdata[7:0]
-```
-
-На выходе должны появляться только корректные BCD-значения, которые делятся на `4`.
-
----
-
-### 5. Запустить синтез
-
-После проверки симуляции можно запустить синтез:
-
-```text
-Flow Navigator -> Synthesis -> Run Synthesis
-```
-
-После завершения синтеза Vivado должен показать сообщение об успешном завершении.
-
----
-
-## Альтернативный запуск вручную
-
-Если Tcl-скрипт не используется, проект можно запустить вручную:
-
-1. Открыть **Vivado**.
-2. Создать новый **RTL Project**.
-3. Выбрать целевую ПЛИС:
-
-```text
-x7a100tcsg324-1
-```
-
-4. Добавить RTL-файл как **Design Source**:
-
-```text
-rtl/axi_bcd_filter.sv
-```
-
-5. Добавить testbench как **Simulation Source**:
-
-```text
-tb/axi_bcd_filter_tb.sv
-```
-
-6. Убедиться, что top module для design sources:
-
-```text
-axi_bcd_filter
-```
-
-7. Убедиться, что top module для simulation sources:
-
-```text
-axi_bcd_filter_tb
-```
-
-8. Запустить симуляцию:
-
-```text
-Run Simulation -> Run Behavioral Simulation
-```
-
-9. После симуляции запустить синтез:
-
-```text
-Run Synthesis
-```
